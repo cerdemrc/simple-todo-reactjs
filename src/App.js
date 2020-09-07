@@ -4,13 +4,10 @@ import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import './App.css';
 import {FormGroup, Form, Button} from "react-bootstrap";
 import List from "./components/List";
-import uuid from "uuid";
 
 class App extends Component {
     state = {
-        items: [],
-        id:uuid(),
-        item:""
+        items: []
     };
 
     onChange = (e) => {
@@ -22,21 +19,26 @@ class App extends Component {
     addItem = (e) => {
         e.preventDefault();
         const newItem = {
-            id:this.state.id,
-            title:this.state.item
+            title:this.state.item,
+            check:false
         }
         const updatedItems = [...this.state.items, newItem];
         this.setState({
-            item:"",
-            items: updatedItems,
-            id:uuid()
+            items: updatedItems
         });
     }
 
     onDelete = (id) => {
-        const filteredItems = this.state.items.filter(item => item.id !== id);
+        this.state.items.splice(id,1)
         this.setState({
-            items: filteredItems
+            items: this.state.items
+        });
+    }
+
+    onCheck = (id) => {
+        this.state.items[id].check=!this.state.items[id].check;
+        this.setState({
+            items:this.state.items
         })
     }
 
@@ -45,7 +47,7 @@ class App extends Component {
             <div className="App">
                 <header className="App-header">
                     <FormGroup className={"App-body"}>
-                        <h1>to do List</h1>
+                        <h1 className={"title"}>to do List</h1>
                         <div className={"input-group mt-3"}>
                             <Form.Control name="text" type="text" onChange={this.onChange} placeholder="Add to do something"/>
                             <div className={"input-group-append"}>
@@ -55,7 +57,7 @@ class App extends Component {
                             </div>
                         </div>
                         <div className={"list-group mt-3"}>
-                            <List items={this.state.items} onDelete={this.onDelete}/>
+                            <List items={this.state.items} onDelete={this.onDelete} onCheck={this.onCheck}/>
                         </div>
                     </FormGroup>
                 </header>
